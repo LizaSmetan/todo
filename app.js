@@ -16,7 +16,7 @@ app.get('/', (req, res, next) => {
     try{
       const connection = mongoose.createConnection(connectString);
       const Tasks = connection.model('tasks', TasksSchema);
-      Tasks.find().then(response => {
+      Tasks.find().limit(20).sort({ $natural: -1 }).then(response => {
         connection.close()
         res.status(200).json(response);
       })
@@ -37,7 +37,7 @@ app.post('/', (req, res) => {
       text: body.text,
       completed: !!body.completed
     }).then(() => {
-      Tasks.find().limit(20).then(response => {
+      Tasks.find().limit(20).sort({ $natural: -1 }).then(response => {
         connection.close()
         res.json(response);
       }).catch(e => {
@@ -65,7 +65,7 @@ app.put('/', (req, res) => {
     Tasks.findByIdAndUpdate(body.id, {completed: body.completed}, {
       new: true
     }).then(() => {
-      Tasks.find().limit(20).then(response => {
+      Tasks.find().limit(20).sort({ $natural: -1 }).then(response => {
         connection.close()
         res.json(response);
       }).catch(e => {
@@ -92,7 +92,7 @@ app.delete("/", (req, res) => {
     const connection = mongoose.createConnection(connectString);
     const Tasks = connection.model('tasks', TasksSchema);
     Tasks.deleteOne({ _id: id }).then(() => {
-      Tasks.find().limit(20).then(response => {
+      Tasks.find().limit(20).sort({ $natural: -1 }).then(response => {
         connection.close()
         res.json(response);
       }).catch(e => {
