@@ -1,8 +1,12 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 app.use(express.json());
+app.use(cors({
+  origin: '*'
+}));
 const connectString = 'mongodb+srv://user:Ki11yourself@cluster0.vjq7std.mongodb.net/?retryWrites=true&w=majority'
 const TasksSchema = new mongoose.Schema({
   text: { type: String },
