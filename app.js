@@ -49,6 +49,34 @@ app.post('/', (req, res) => {
     res.status(404).send('Error');
   }
 });
+app.put('/', (req, res) => {
+  const {body} = req;
+  if(!body.id){
+    res.status(404).send('Error');
+  }
+  try{
+    const connection = mongoose.createConnection(connectString);
+    const Tasks = connection.model('tasks', TasksSchema);
+
+    Tasks.findByIdAndUpdate(body.id, {completed: body.completed}, {
+      new: true
+    }).then(() => {
+      Tasks.find().limit(20).then(response => {
+        connection.close()
+        res.json(response);
+      }).catch(e => {
+        connection.close()
+        res.status(404).send('Error');
+      })
+    }).catch(e => {
+      connection.close()
+      res.status(404).send('Error');
+    })
+  } catch (e){
+    console.log(e)
+    res.status(404).send('Error');
+  }
+});
 app.delete("/", (req, res) => {
   const {id} = req.query;
   
